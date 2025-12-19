@@ -4,5 +4,6 @@ WORKDIR /app
 
 COPY package*.json .
 
+RUN apt-get install -y openjdk-11-jre-headless
 
 CMD [ "sh" ]

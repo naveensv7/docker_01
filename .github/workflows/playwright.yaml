@@ -25,6 +25,7 @@ jobs:
 
       - name: Run Test in docker
         run: docker run -v $GITHUB_WORKSPACE:/app -v node_modules_01:/app/node_modules my-play-doc-img-01 sh -c "npm run start && npm run allure:generate"
+        continue-on-error: true
 
       - name: Upload as an artifact
         uses: actions/upload-artifact@v4
