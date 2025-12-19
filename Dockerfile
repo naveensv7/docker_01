@@ -4,6 +4,9 @@ WORKDIR /app
 
 COPY package*.json .
 
-RUN apt-get install -y openjdk-11-jre-headless
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jre-headless && \
+    rm -rf /var/lib/apt/lists/*
+
 
 CMD [ "sh" ]
