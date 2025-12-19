@@ -1,0 +1,39 @@
+name: Testing allure results
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  playwright-allure:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Build docker image
+        run: docker build -t my-play-doc-img-01 .
+
+      - name: Run in docker
+        run: docker run -v node_modules_01:/app/node_modules my-play-doc-img-01 sh -c "npm install"
+
+      - name: Run Test in docker
+        run: docker run -v $GITHUB_WORKSPACE:/app -v node_modules_01:/app/node_modules my-play-doc-img-01 sh -c "npm run start && npm run allure:generate"
+
+      - name: Upload as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Upload allure
+          path: reports/allure-report
+
+      - name: Upload to Github
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: reports/allure-report
